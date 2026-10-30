@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,          // JS 파일과 TS 파일의 혼용 허용 (점진적 도입을 위해 필수)
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,           // 나중에 코드가 안정되면 true로 변경하는 것을 권장
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",       // React 17 이상이면 "react-jsx", 그 이하는 "react"
+    "types": ["vite/client"]  
+  },
+  "include": ["src"]
+}
