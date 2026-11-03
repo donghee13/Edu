@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getPokemonList } from '../api/pokemon'
+import { getPokemonList, getPokemonSpecies } from '../api/pokemon' // ✅ getPokemonSpecies 추가
 import type { PokemonSummary } from '../types/pokemon'
 import { toSummary } from '../utils/pokemon'
 
@@ -19,8 +19,26 @@ export function usePokemonList(page: number) {
       setError(null)
 
       try {
+        // 1. 영어 이름이 담긴 기본 20마리 목록 가져오기
         const data = await getPokemonList(PAGE_SIZE, page * PAGE_SIZE, controller.signal)
-        setPokemons(data.results.map(toSummary))
+        const basicSummaries = data.results.map(toSummary)
+
+        // 2. 20마리의 종(species) 정보를 동시에 추가로 요청하기
+        const speciesPromises = basicSummaries.map((p) => getPokemonSpecies(p.id, controller.signal))
+        const speciesResults = await Promise.all(speciesPromises)
+
+        // 3. 원래 데이터에 한국어 이름 합치기
+        const finalPokemons = basicSummaries.map((pokemon, index) => {
+          const species = speciesResults[index]
+          const ko = species.names.find((n) => n.language.name === 'ko')
+          return {
+            ...pokemon,
+            koreanName: ko ? ko.name : pokemon.name // 한국어 없으면 영어로 대체
+          }
+        })
+
+        // 4. 완성된 데이터를 state에 저장
+        setPokemons(finalPokemons)
         setTotalCount(data.count)
       } catch (err) {
         if (controller.signal.aborted) return // 우리가 취소한 요청이면 무시

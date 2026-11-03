@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { getPokemon } from '../api/pokemon'
+import { getPokemon, getPokemonSpecies} from '../api/pokemon'
 import type { Pokemon } from '../types/pokemon'
 
 export function usePokemon(id: number) {
   const [pokemon, setPokemon] = useState<Pokemon | null>(null)
+  const [koreanName, setKoreanName] = useState<string>('') // 한국어 이름 추가
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -15,8 +16,17 @@ export function usePokemon(id: number) {
       setError(null)
 
       try {
-        const data = await getPokemon(id, controller.signal)
-        setPokemon(data)
+        const [pokemonData, speciesData] = await Promise.all([
+          getPokemon(id, controller.signal),
+          getPokemonSpecies(id, controller.signal)
+        ])
+        setPokemon(pokemonData)
+
+        // 한국어 이름 찾기
+        const koreanNameEntry = speciesData.names.find(name => name.language.name === 'ko')
+        if (koreanNameEntry) {
+          setKoreanName(koreanNameEntry.name)
+        }
       } catch (err) {
         if (controller.signal.aborted) return
         setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했어요')
@@ -29,5 +39,5 @@ export function usePokemon(id: number) {
     return () => controller.abort()
   }, [id])
 
-  return { pokemon, isLoading, error }
+  return { pokemon, koreanName, isLoading, error }
 }

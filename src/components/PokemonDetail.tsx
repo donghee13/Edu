@@ -15,8 +15,8 @@ type PokemonDetailProps = {
 }
 
 function PokemonDetail({ id, onClose }: PokemonDetailProps) {
-  const { pokemon, isLoading, error } = usePokemon(id)
-  console.log(pokemon, isLoading, error)
+  const { pokemon, koreanName, isLoading, error } = usePokemon(id)
+  console.log(pokemon, koreanName, isLoading, error)
 
   return (
     // 바깥(어두운 배경)을 누르면 닫기
@@ -34,7 +34,9 @@ function PokemonDetail({ id, onClose }: PokemonDetailProps) {
               className="mx-auto h-40 w-40 object-contain"
             />
             <p className="text-center text-sm text-gray-400">#{String(pokemon.id).padStart(4, '0')}</p>
-            <h2 className="text-center text-2xl font-bold capitalize">{pokemon.name}</h2>
+            <h2 className="text-center text-2xl font-bold capitalize">
+              {koreanName} <span className="text-lg text-gray-400 font-normal">({pokemon.name})</span>
+            </h2>
 
             <div className="mt-3 flex justify-center gap-2">
               {pokemon.types.map(({ type }) => (

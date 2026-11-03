@@ -28,6 +28,9 @@ function PokemonCard({ pokemon, onSelect }: PokemonCardProps) {
       >
         <img src={pokemon.imageUrl} alt={pokemon.name} loading="lazy" className="h-24 w-24 object-contain" />
         <span className="text-xs text-gray-400">#{String(pokemon.id).padStart(4, '0')}</span>
+        {pokemon.koreanName && (
+          <div className="text-lg font-bold">{pokemon.koreanName}</div>
+        )}
         <span className="font-semibold capitalize">{pokemon.name}</span>
       </button>
     </li>

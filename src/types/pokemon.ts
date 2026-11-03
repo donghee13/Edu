@@ -40,5 +40,14 @@ export type Pokemon = {
 export type PokemonSummary = {
   id: number
   name: string
+  koreanName?: string
   imageUrl: string
+}
+
+// GET /pokemon-species/{id} 의 응답 (도전과제)
+export type PokemonSpecies = {
+  names: {
+    name: string
+    language: NamedAPIResource
+  }[]
 }
